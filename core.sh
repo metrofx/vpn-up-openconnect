@@ -100,6 +100,7 @@ run_openconnect() {
   local background_flag=""
   local quiet_flag=""
   local server_cert_flag=""
+  SERVER_CERTIFICATE="${SERVER_CERTIFICATE%%[[:space:]]*}"
   [ -n "$SERVER_CERTIFICATE" ] && server_cert_flag="--servercert=$SERVER_CERTIFICATE"
 
   # Warm sudo timestamp if configured and secret is available
