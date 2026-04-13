@@ -3,15 +3,7 @@
 load_profile_fields() {
   local selection="$1"
   # Extract fields using xmlstarlet; accept legacy/new tag variants
-  IFS=$'\n' read -r -d '' \
-    VPN_NAME \
-    PROTOCOL \
-    VPN_HOST \
-    VPN_GROUP \
-    VPN_USER \
-    VPN_PASSWD \
-    VPN_DUO2FAMETHOD \
-    SERVER_CERTIFICATE < <(
+  mapfile -t _fields < <(
       xmlstarlet sel -t \
         -m "//VPN[name='${selection}']" \
         -v "name" -o $'\n' \
@@ -21,8 +13,16 @@ load_profile_fields() {
         -v "username | user" -o $'\n' \
         -v "password" -o $'\n' \
         -v "duo2FAMethod | duoMethod" -o $'\n' \
-        -v "serverCertificate" -n "${PROFILES_FILE}"
+        -v "serverCertificate" -o $'\n' "${PROFILES_FILE}"
     )
+  VPN_NAME="${_fields[0]}"
+  PROTOCOL="${_fields[1]}"
+  VPN_HOST="${_fields[2]}"
+  VPN_GROUP="${_fields[3]}"
+  VPN_USER="${_fields[4]}"
+  VPN_PASSWD="${_fields[5]}"
+  VPN_DUO2FAMETHOD="${_fields[6]}"
+  SERVER_CERTIFICATE="${_fields[7]}"
 
   export VPN_NAME PROTOCOL VPN_HOST VPN_GROUP VPN_USER VPN_PASSWD VPN_DUO2FAMETHOD SERVER_CERTIFICATE
 }
